@@ -1,0 +1,11 @@
+<h1>All suppliers</h1>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+  <%= render partial: "supplier", collection: @suppliers, as: :supplier %>
+</div>
+
+<h1 class="mt-10">Upcoming suppliers</h1>
+
+<div class="grid grid-cols-3 gap-3">
+  <%= render partial: "supplier", collection: @upcoming, as: :supplier %>
+</div>

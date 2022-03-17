@@ -1,0 +1,13 @@
+<nav class="bg-white flex pl-3 pr-3 gap-3">
+  <%= link_to "Home",         dashboard_path,                       class: "block border-b-4 border-transparent hover:border-indigo-500 p-3" %>
+  <%= link_to "Suppliers",    dashboard_suppliers_path,             class: "block border-b-4 border-transparent hover:border-indigo-500 p-3" %>
+  <%= link_to "Variants",     dashboard_variants_path,              class: "block border-b-4 border-transparent hover:border-indigo-500 p-3" %>
+  <%= link_to "Requirements", dashboard_material_requirements_path, class: "block border-b-4 border-transparent hover:border-indigo-500 p-3" %>
+  <%= link_to "Orders",       dashboard_orders_path,                class: "block border-b-4 border-transparent hover:border-indigo-500 p-3" %>
+
+  <div class="flex flex-grow border-b-4 border-transparent justify-end p-3 gap-3">
+    <%= image_tag(session[:logo_url], alt: "My organization logo", class: "h-6 w-6 rounded-full") if session[:logo_url].present? %>
+    <p class="text-slate-500"><%= session[:name] %></p>
+    <%= button_to "Logout", logout_path, class: "link text-rose-700" %>
+  </div>
+</nav>

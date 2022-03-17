@@ -1,0 +1,44 @@
+<%= turbo_frame_tag :variants do %>
+  <div class="bg-slate-300 rounded p-3">
+    <div class="grid grid-cols-3 gap-3">
+      <label class="block">
+        <p class="text-gray-700">Search term</p>
+        <%= text_field_tag :query, @query, placeholder: "Search for a variant...", class: "w-full" %>
+      </label>
+
+      <% @available_filters.each do |filter| %>
+        <% filter.symbolize_keys => { name:, label:, options:, total_count: } %>
+        <% options = options.pluck("label", "value", "count").map { ["#{_1 || _2} (#{_3})", _2] } %>
+        <label class="block">
+          <p class="text-gray-700"><%= label || name.humanize %></p>
+          <%= select_tag "filters[#{name}]", options_for_select(options, @filters[name]), include_blank: true, class: "w-full" %>
+        </label>
+      <% end %>
+    </div>
+
+    <div class="w-full flex justify-end">
+      <%= submit_tag "Search!", class: "block mt-3 btn" %>
+    </div>
+  </div>
+
+  <em class="block my-4 text-right">Showing first <%= @variants.size %> results (<%= @pages["Total-Count"] %> total)</em>
+
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th class="text-left p-2">Article</th>
+        <th class="text-left p-2">Variant</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @variants.each do |variant| %>
+        <tr class="odd:bg-slate-50">
+          <td class="p-2"><%= variant.dig("article", "summary") %></td>
+          <td class="p-2"><%= link_to variant.dig("summary"), dashboard_variant_path(id: variant.fetch("id")), class: "link", "data-turbo-frame" => "_top" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<% end %>

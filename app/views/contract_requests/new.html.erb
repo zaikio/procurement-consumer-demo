@@ -1,0 +1,38 @@
+<h1>Connect with <%= params[:supplier_name] %></h1>
+
+<% if @errors %>
+  <pre><%= @errors %></pre>
+<% end %>
+
+<%= form_with(url: dashboard_contract_requests_path, scope: :contract_request) do |f| %>
+  <%= f.hidden_field :supplier_id, value: params[:supplier_id] %>
+
+  <div class="max-w-md mt-10">
+    <label class="block">
+      <span class="text-gray-700">Customer number</span>
+      <%= f.text_field :customer_number, placeholder: "1234", required: true, class: "block w-full" %>
+    </label>
+
+    <label class="block mt-5">
+      <span class="text-gray-700">First name</span>
+      <%= f.text_field :contact_first_name, placeholder: "John", required: true, class: "block w-full" %>
+    </label>
+
+    <label class="block mt-5">
+      <span class="text-gray-700">Last name</span>
+      <%= f.text_field :contact_last_name, placeholder: "Smith", required: true, class: "block w-full" %>
+    </label>
+
+    <label class="block mt-5">
+      <span class="text-gray-700">Email</span>
+      <%= f.email_field :contact_email, placeholder: "john@smith.com", required: true, class: "block w-full" %>
+    </label>
+
+    <label class="block mt-5">
+      <span class="text-gray-700">Phone number</span>
+      <%= f.telephone_field :contact_phone, placeholder: "+44 12345 678910", required: true, class: "block w-full" %>
+    </label>
+
+    <%= f.submit "Request connection", class: "btn mt-10" %>
+  </div>
+<% end %>

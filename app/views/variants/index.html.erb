@@ -1,0 +1,7 @@
+<h1>/api/v1/variants</h1>
+
+<%= form_with(url: search_dashboard_variants_path, method: :post, "data-turbo" => true, "data-turbo-frame" => :variants, class: "mb-5") do |f| %>
+  <%= turbo_frame_tag :variants, src: search_dashboard_variants_path do %>
+    <em>Loading...</em>
+  <% end %>
+<% end %>

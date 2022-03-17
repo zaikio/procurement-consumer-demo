@@ -1,0 +1,46 @@
+<% @material_requirements.group_by { [_1.dig("required_material", "supplier", "name"), _1.dig("delivery", "site", "name")] }.each do |(supplier, site), requirements| %>
+  <h1>From <span class="underline"><%= supplier %></span> to <span class="underline"><%= site %></span></h1>
+
+  <%= form_with(url: dashboard_orders_path, scope: :order, data: { controller: "checkbox", "checkbox-target" => "form" }) do |f| %>
+    <table class="w-full">
+      <thead>
+        <tr>
+          <th class="text-left p-2">Product</th>
+          <th class="text-left p-2">Created</th>
+          <th class="text-left p-2">Amount</th>
+          <th class="text-left p-2">Pricing</th>
+          <th class="text-right p-2">Order?</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% requirements.each do |requirement| %>
+        <tr class="odd:bg-slate-50">
+          <td class="p-2">
+            <%= link_to requirement.dig("required_material", "description"), dashboard_material_requirement_path(id: requirement["id"]), class: "block link" %>
+          </td>
+          <td class="p-2">
+            <%= time_ago_in_words Time.parse(requirement["created_at"]) %> ago
+          </td>
+          <td class="p-2">
+            <%= requirement.dig("required_material", "amount") || "?" %> <%= requirement.dig("required_material", "unit")&.pluralize %>
+          </td>
+          <td class="p-2">
+            <% price = requirement.dig("pricing", "price") %>
+            <% if price %>
+              <%= number_to_currency(requirement.dig("pricing", "price"), unit: requirement.dig("pricing", "currency")) %>
+              <span class="text-sm text-gray-500">(<%= requirement.dig("pricing", "accuracy").humanize %>)</span>
+            <% end %>
+          </td>
+          <td class="text-right p-2">
+            <%= check_box_tag "order[material_requirement_ids][]", requirement["id"] %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <div class="mt-2 mb-10 flex justify-end">
+      <%= f.submit "Order", class: "btn", data: { "checkbox-target" => "button" } %>
+    </div>
+  <% end %>
+<% end %>

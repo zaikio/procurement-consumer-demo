@@ -1,0 +1,47 @@
+<h1><%= @variant.dig("article", "summary") %> <%= @variant["summary"] %></h1>
+
+<%= form_with(url: dashboard_material_requirements_path, scope: :material_requirement) do |f| %>
+  <%= f.hidden_field :variant_id, value: @variant.fetch("id") %>
+
+  <% skus = @variant.fetch("skus", []) %>
+  <em>You may optionally filter the SKUs to order:</em>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% skus.each do |sku| %>
+      <div class="bg-white rounded-xl shadow-md p-3">
+        <label class="flex items-center">
+          <div class="px-3">
+            <%= check_box_tag "material_requirement[sku_preference_ids][]", sku['id'], :checked %>
+          </div>
+          <div class="pl-3">
+            <%= number_with_delimiter(sku["amount"].to_i) %>
+            <%= sku.fetch("unit", "unknown").pluralize(sku["amount"].to_i) %>
+            <%= "(pallet)" if sku["palletized"] %>
+            <p class="text-sm font-semibold text-blue-500"><%= safe_join(sku.fetch("suppliers", []).pluck("name"), ", ") %></p>
+            <p class="text-sm text-gray-500"><%= sku["order_number"] %></p>
+          </div>
+        </label>
+      </div>
+    <% end %>
+  </div>
+
+  <% if skus.any? %>
+    <div class="grid lg:grid-cols-2 gap-4 my-5">
+      <label class="block">
+        <span class="text-gray-700 block">Required amount & units</span>
+
+        <div class="flex flex-row">
+          <%= f.number_field :amount, required: true, placeholder: "1", class: "flex-grow border-r-0" %>
+          <%= f.select :unit, skus.pluck("unit").uniq.map { [_1.pluralize, _1 ] }, {}, class: "" %>
+        </div>
+      </label>
+
+      <label class="block">
+        <span class="text-gray-700">Required delivery date</span>
+        <%= f.date_field :required_delivery_date, value: 3.days.from_now.strftime("%Y-%m-%d"), required: true, class: "block w-full" %>
+      </label>
+    </div>
+
+    <%= f.submit "Create material requirement", class: "btn" %>
+  <% end %>
+<% end %>

@@ -1,0 +1,57 @@
+<h1>Order: <%= @order["references"].first %> <small>(<%= @order["state"] %>)</small></h1>
+
+<table class="w-full my-5">
+  <thead>
+    <tr>
+      <th></th>
+      <th class="text-left">Item</th>
+      <th class="text-left">Quantity</th>
+      <th class="text-left">Price</th>
+    </tr>
+  </thead>
+<% @order["order_line_items"].each.with_index(1) do |line_item, idx| %>
+  <tr class="odd:bg-slate-50">
+    <td class="p-2 align-top"><%= idx %></td>
+    <td class="p-2">
+      <%= line_item["description"] %>
+      <br>
+      <span class="text-gray-600"><%= line_item["order_number"] %></span>
+    </td>
+    <td class="p-2">
+      <%= line_item["amount_in_base_unit"] %>
+      <br>
+      (<%= line_item["amount"] %> x <%= line_item.dig("sku", "amount") %> <%= line_item.dig("sku", "unit") %>)
+    </td>
+    <td class="p-2">
+      <%= number_to_currency(line_item.dig("pricing", "total_net_price"), unit: @order["currency"]) %>
+      <br>
+      <span class="text-gray-600">(<%= number_to_currency(line_item.dig("pricing", "unit_net_price"), unit: @order["currency"]) %> each)</span>
+    </td>
+  </tr>
+<% end %>
+  <tfoot class="border-t-2 border-gray-300 font-semibold">
+    <tr>
+      <td colspan="2"></td>
+      <td>Total net price</td>
+      <td class="p-2"><%= @order.dig("pricing", "total_net_price") %></td>
+    </tr>
+    <tr>
+    <% if @order["state"] == "draft" %>
+      <tr>
+        <td colspan="2">
+        <td colspan="2" class="font-normal italic">(taxes & fees are known after order is confirmed)</td>
+      </tr>
+    <% else %>
+      <tr>
+        <td colspan="2"></td>
+        <td>Taxes</td>
+        <td class="p-2"><%= @order.dig("pricing", "taxes") %></td>
+      </tr>
+    <% end %>
+  </tfoot>
+</table>
+
+<strong>Delivery on <%= @order.dig("delivery", "date") || @order.dig("delivery", "desired_delivery_date") %>, to:</strong>
+<p>
+  <%= safe_join(@order.dig("delivery", "address").values_at("addressee", "addition", "street", "town", "zip_code"), tag.br) %>
+</p>

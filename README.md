@@ -35,7 +35,7 @@ First, you'll need a [Zaikio App][create-app] to authenticate with. In addition 
 default configuration, you'll need to set the `Desired OAuth Scopes` like so:
 
 ```
-directory.organization.r
+zaikio.organization.r
 procurement_consumer.article_base.r
 procurement_consumer.contracts.rw
 procurement_consumer.orders.rw

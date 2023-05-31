@@ -20,7 +20,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
            ENV.fetch("ZAIKIO_CLIENT_ID"),
            ENV.fetch("ZAIKIO_CLIENT_SECRET"),
            scope: %w(
-             Org.directory.organization.r
+             Org.zaikio.organization.r
              Org.procurement_consumer.article_base.r
              Org.procurement_consumer.contracts.rw
              Org.procurement_consumer.material_requirements.rw
